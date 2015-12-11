@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:System="clr-namespace:System;assembly=mscorlib" x:Class="LrcMakerTest02.MainWindow"
         Title="LrcMaker" Height="600" Width="800" Icon="256X256.ico" MinWidth="630"
-    Loaded="Window_Loaded" Background="#FFCFFFE7">
+    Loaded="Window_Loaded" FontFamily="Microsoft Yahei">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
@@ -112,7 +112,7 @@
                 <Button Content="清空" Style="{StaticResource Button}" Grid.Column="6" Click="ClearAll"/>
             </Grid>
             <ListBox Grid.Row="1" Margin="5,0,5,5" Name="LrcListBox" MouseLeftButtonUp="LrcListBox_MouseLeftButtonUp" MouseRightButtonUp="LrcListBox_MouseRightButtonUp" 
-                     SelectionChanged="LrcListBox_SelectionChanged" FontSize="12pt" Background="#BFFFFFFF">
+                     SelectionChanged="LrcListBox_SelectionChanged" FontSize="12pt">
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
                         <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick"/>
