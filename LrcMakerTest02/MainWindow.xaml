@@ -1,0 +1,141 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:System="clr-namespace:System;assembly=mscorlib" x:Class="LrcMakerTest02.MainWindow"
+        Title="LrcMaker" Height="600" Width="800" Icon="256X256.ico" MinWidth="630"
+    Loaded="Window_Loaded" Background="#FFCFFFE7">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="16*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" MinWidth="130px"/>
+            <ColumnDefinition Width="8*"/>
+        </Grid.ColumnDefinitions>
+        <Menu Grid.Row="0" Grid.ColumnSpan="2" VerticalContentAlignment="Center" FontSize="15">
+            <MenuItem Header="文件">
+                <MenuItem Header="导入音频" Click="OpenMusicFile"/>
+                <MenuItem Header="导入歌词">
+                    <MenuItem Header="有时间轴">
+                        <MenuItem Header="来自文件"  Click="OpenLrcFile"/>
+                        <MenuItem Header="来自剪贴板" Click="ImportLrcFromClipboard"/>
+                    </MenuItem>
+                    <MenuItem Header="无时间轴">
+                        <MenuItem Header="来自文件"  Click="OpenLrcFileWithoutTime"/>
+                        <MenuItem Header="来自剪贴板" Click="ImportLrcFromClipboardWithoutTime"/>
+                    </MenuItem>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="保存歌词文件" Click="SaveLrcFile"/>
+                <MenuItem Header="复制歌词文本" Click="CopyLrcText"/>
+                <Separator/>
+                <MenuItem Header="退出" Click="CloseWindow"/>
+            </MenuItem>
+            <MenuItem Header="编辑">
+                <MenuItem Header="歌词按时间排序" Click="SortLrc"/>
+                <MenuItem Header="时间全部重置为0" Click="SetAllZero"/>
+                <MenuItem Header="插入歌曲信息（未完成）"/>
+                <MenuItem Header="删除所有空行（未完成）"/>
+                <MenuItem Header="时间整体偏移（未完成）"/>
+                <MenuItem Header="批量插入空行（未完成）"/>
+            </MenuItem>
+            <MenuItem Header="相关">
+                <MenuItem Header="版本信息"/>
+                <MenuItem Header="帮助"/>
+            </MenuItem>
+        </Menu>
+        <StackPanel Grid.Row="1" Grid.Column="0" Grid.RowSpan="2">
+            <StackPanel.Resources>
+                <Style TargetType="Button" x:Key="Button">
+                    <Setter Property="Margin" Value="10,5"/>
+                    <Setter Property="Width" Value="60"/>
+                    <Setter Property="Padding" Value="3"/>
+                    <Setter Property="Background" Value="White"/>
+                    <Setter Property="HorizontalAlignment" Value="Left"/>
+                    <Setter Property="FontSize" Value="11pt"/>
+                </Style>
+            </StackPanel.Resources>
+            <MediaElement x:Name="MediaPlayer" Height="0" LoadedBehavior="Manual" MediaOpened="MediaPlayer_MediaOpened"/>
+            <TextBlock Text="歌曲时长" Margin="5" FontSize="14px"/>
+            <TextBox IsReadOnly="True" Margin="5" FontSize="12pt" Width="120" HorizontalAlignment="Left" x:Name="TotalLength">
+                00:00.000
+            </TextBox>
+            <TextBlock Text="当前位置" Margin="5" FontSize="14px"/>
+            <TextBox IsReadOnly="True" Margin="5" FontSize="12pt" Width="120" HorizontalAlignment="Left" x:Name="CurrentPosition">
+                00:00.000
+            </TextBox>
+            <Button Content="播放" Style="{StaticResource Button}" Click="Play"/>
+            <Button Content="暂停" Style="{StaticResource Button}" Click="Pause"/>
+            <Button Content="停止" Style="{StaticResource Button}" Click="Stop"/>
+            <Button Content="快进" Style="{StaticResource Button}" Click="Forward"/>
+            <Button Content="快退" Style="{StaticResource Button}" Click="Backward"/>
+            <CheckBox Content="毫秒取近似（未完成）" Margin="10,5" FontSize="11pt"/>
+            <CheckBox Content="播放时测试" Name="PlayAndTest" Margin="10,5" FontSize="11pt"/>
+            <TextBlock Text="时间偏差（毫秒）" Margin="10,10,5,5" FontSize="11pt"/>
+            <TextBox Name="TimeOffset" Margin="5" Width="120" FontSize="12pt" Text="-100" HorizontalContentAlignment="Left" HorizontalAlignment="Left"/>
+        </StackPanel>
+        <WrapPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="2">
+            <Button Content="更新" Margin="5,5,0,5" FontSize="11pt" Background="White" Width="50" Click="AmendLineAtTime" Padding="3"/>
+            <Button Content="修改" Margin="5" FontSize="11pt" Background="White" Width="50" Click="AmendLine" Padding="3"/>
+        </WrapPanel>
+        <Grid Grid.Column="1" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.Resources>
+                    <Style TargetType="Button" x:Key="Button">
+                        <Setter Property="FontSize" Value="12pt"/>
+                        <Setter Property="Margin" Value="5"/>
+                        <Setter Property="Padding" Value="3"/>
+                        <Setter Property="Background" Value="White"/>
+                    </Style>
+                </Grid.Resources>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Name="NewLineButton" Content="新建行" Style="{StaticResource Button}" Grid.Column="0" Click="InsertNewLine"/>
+                <Button Content="插入行" Style="{StaticResource Button}" Grid.Column="1" Click="InsertLine"/>
+                <Button Content="删除行" Style="{StaticResource Button}" Grid.Column="2" Click="DeleteLine"/>
+                <Button Content="上移" Style="{StaticResource Button}" Grid.Column="3" Click="MoveLineUp"/>
+                <Button Content="下移" Style="{StaticResource Button}" Grid.Column="4" Click="MoveLineDown"/>
+                <Button Content="撤销" Style="{StaticResource Button}" Grid.Column="5" Click="Cancel"/>
+                <Button Content="清空" Style="{StaticResource Button}" Grid.Column="6" Click="ClearAll"/>
+            </Grid>
+            <ListBox Grid.Row="1" Margin="5,0,5,5" Name="LrcListBox" MouseLeftButtonUp="LrcListBox_MouseLeftButtonUp" MouseRightButtonUp="LrcListBox_MouseRightButtonUp" 
+                     SelectionChanged="LrcListBox_SelectionChanged" FontSize="12pt" Background="#BFFFFFFF">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                        <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBoxItem>测试行1</ListBoxItem>
+                <ListBoxItem>测试行2</ListBoxItem>
+                <ListBoxItem>测试行3</ListBoxItem>
+                <ListBoxItem>测试行4</ListBoxItem>
+                <ListBoxItem>测试行5</ListBoxItem>
+                <ListBoxItem>测试行6</ListBoxItem>
+                <ListBoxItem>测试行7</ListBoxItem>
+                <ListBoxItem>测试行8</ListBoxItem>
+                <ListBoxItem>测试行9</ListBoxItem>
+            </ListBox>
+        </Grid>
+        <Grid Grid.Column="1" Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="4*"/>
+            </Grid.ColumnDefinitions>
+            <TextBox Name="TimeBox" Margin="5,5,0,5" FontSize="14px"/>
+            <TextBox Name="LrcBox" Margin="5" FontSize="14px" Grid.Column="1" KeyDown="FinishNewLine"/>
+        </Grid>
+    </Grid>
+</Window>
