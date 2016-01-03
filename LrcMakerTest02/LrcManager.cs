@@ -136,7 +136,7 @@ namespace LrcMakerTest02
                 StringBuilder sb = new StringBuilder();
                 int Length = StringList.Count;
                 List<string> list = StringList;
-                for (int i = 0; i < Length - 2; i++)
+                for (int i = 0; i < Length - 1; i++)
                 {
                     sb.Append(list[i]);
                     sb.Append(Environment.NewLine);
