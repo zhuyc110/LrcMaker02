@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace LrcMakerTest02
@@ -25,6 +29,9 @@ namespace LrcMakerTest02
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             UpdateListBox();
+
+            TimeBox.Clear();
+            LrcBox.Clear();
         }
 
         LrcManager lrcManager = new LrcManager();
@@ -53,25 +60,47 @@ namespace LrcMakerTest02
             //if (result != System.Windows.Forms.DialogResult.OK) return;
         }
 
+        private bool isPlaying = false;
         private void Play(object sender, RoutedEventArgs e)
         {
-            MediaPlayer.Play();
-        }
-        private void Pause(object sender, RoutedEventArgs e)
-        {
-            MediaPlayer.Pause();
+            if (MediaPlayer.Source == null) return;
+            System.Windows.Controls.Button b = PlayPause;
+            if ((string)b.Content == "播放")
+            {
+                MediaPlayer.Play();
+                b.Content = "暂停";
+                b.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFECFF74"));
+                isPlaying = true;
+            }
+            else
+            {
+                MediaPlayer.Pause();
+                b.Content = "播放";
+                b.Background = new SolidColorBrush(Colors.LightGreen);
+                isPlaying = false;
+            }
         }
         private void Stop(object sender, RoutedEventArgs e)
         {
             MediaPlayer.Stop();
+            PlayPause.Content = "播放";
+            isPlaying = false;
         }
-        private void Forward(object sender, RoutedEventArgs e)
+        private void Forward5(object sender, RoutedEventArgs e)
         {
             MediaPlayer.Position += new TimeSpan(0, 0, 5);
         }
-        private void Backward(object sender, RoutedEventArgs e)
+        private void Backward5(object sender, RoutedEventArgs e)
         {
             MediaPlayer.Position -= new TimeSpan(0, 0, 5);
+        }
+        private void Forward1(object sender, RoutedEventArgs e)
+        {
+            MediaPlayer.Position += new TimeSpan(0, 0, 1);
+        }
+        private void Backward1(object sender, RoutedEventArgs e)
+        {
+            MediaPlayer.Position -= new TimeSpan(0, 0, 1);
         }
 
         void TickEvent(object sender, EventArgs e)
@@ -79,7 +108,7 @@ namespace LrcMakerTest02
             CurrentPosition.Text = Time.Parse(CurrentTime).Info;
 
             // 播放并测试
-            if (PlayAndTest.IsChecked.Value)
+            if (PlayAndTest.IsChecked.Value && LrcListBox.Items.Count > 0 && isPlaying)
             {
                 double temptime = CurrentTime;
                 List<Lrc> templist = lrcManager.LrcList;
@@ -102,6 +131,8 @@ namespace LrcMakerTest02
         {
             TotalLength.Text = Time.Parse(MediaPlayer.NaturalDuration.TimeSpan).Info;
         }
+
+        // 菜单按钮
         private void OpenLrcFile(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
@@ -164,6 +195,13 @@ namespace LrcMakerTest02
                 sw.Dispose();
             }
         }
+        private void InsertInfo(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void ShiftAll(object sender, RoutedEventArgs e)
+        {
+        }
 
         void UpdateListBox()
         {
@@ -195,7 +233,7 @@ namespace LrcMakerTest02
             set { MediaPlayer.Position = new TimeSpan(0, 0, 0, 0, (int)(value * 1000)); }
         }
 
-        // 上方按钮
+        // 一排六个按钮
         private void InsertNewLine(object sender, RoutedEventArgs e)
         {
             int tempIndex = Index + 1;
@@ -208,7 +246,7 @@ namespace LrcMakerTest02
         {
             if (Index > -1)
             {
-                int tempIndex = Index;
+                int tempIndex = Index + 1;
                 lrcManager.AddLineAt(tempIndex, new Lrc(CurrentTime, ""));
                 UpdateListBox(tempIndex);
             }
@@ -222,17 +260,24 @@ namespace LrcMakerTest02
         private void DeleteLine(object sender, RoutedEventArgs e)
         {
             if (Index == -1) return;
+            // 不是最后一项，删除后选择后一项
             else if (Index < LrcListBox.Items.Count - 1)
             {
                 int tempIndex = Index;
                 lrcManager.RemoveLineAt(tempIndex);
                 UpdateListBox(tempIndex);
             }
+            // 是最后一项，删除后选择前一项
             else if (Index == LrcListBox.Items.Count - 1)
             {
                 int tempIndex = Index;
                 lrcManager.RemoveLineAt(tempIndex);
                 UpdateListBox(tempIndex - 1);
+            }
+            if (LrcListBox.Items.Count==0)
+            {
+                LrcBox.Text = "";
+                TimeBox.Text = "";
             }
         }
         private void MoveLineUp(object sender, RoutedEventArgs e)
@@ -258,11 +303,46 @@ namespace LrcMakerTest02
             lrcManager.Clear();
             UpdateListBox();
         }
-
-        // 菜单按钮
-        private void InsertInfo(object sender, RoutedEventArgs e)
+        private void Help_Click(object sender, RoutedEventArgs e)
         {
-
+            System.Windows.Controls.MenuItem mi = sender as System.Windows.Controls.MenuItem;
+            if ((string)mi.Header == "帮助")
+            {
+                if (!File.Exists("Help.txt"))
+                {
+                    System.Windows.MessageBox.Show("找不到帮助文件。");
+                }
+                else
+                {
+                    Process.Start("Help.txt");
+                }
+            }
+            else if ((string)mi.Header == "版本")
+            {
+                if (!File.Exists("Plan.txt"))
+                {
+                    System.Windows.MessageBox.Show("找不到帮助文件。");
+                }
+                else
+                {
+                    Process.Start("Plan.txt");
+                }
+            }
+        }
+        private void SortLrc(object sender, RoutedEventArgs e)
+        {
+            lrcManager.SortByTime();
+            UpdateListBox();
+        }
+        private void SetAllZero(object sender, RoutedEventArgs e)
+        {
+            int tempIndex = Index;
+            lrcManager.SetAllZero();
+            UpdateListBox(tempIndex);
+        }
+        private void CopyLrcText(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Clipboard.SetText(lrcManager.ContentInLines);
         }
 
         // 根据LrcListBox的选择，更新下方两个文本框的内容
@@ -289,6 +369,7 @@ namespace LrcMakerTest02
             ShowCurrentLineInfo();
         }
 
+        // 左下两个按钮
         private void AmendLine(object sender, RoutedEventArgs e)
         {
             int tempIndex = Index;
@@ -297,26 +378,13 @@ namespace LrcMakerTest02
         }
         private void AmendLineAtTime(object sender, RoutedEventArgs e)
         {
-            // 如果时间偏差中的数字不科学，就不折腾了
             double result;
-            if (!double.TryParse(TimeOffset.Text, out result)) return;
+            if (!double.TryParse(TimeOffset.Text, out result)) result = 0;
             int tempIndex = Index;
             lrcManager.AmendLineAt(Index, Time.Parse(CurrentTime + result / 1000).Info, LrcBox.Text);
             UpdateListBox();
             if (tempIndex >= LrcListBox.Items.Count - 1) Index = LrcListBox.Items.Count - 1;
             else Index = tempIndex + 1;
-        }
-
-        private void SortLrc(object sender, RoutedEventArgs e)
-        {
-            lrcManager.SortByTime();
-            UpdateListBox();
-        }
-        private void SetAllZero(object sender, RoutedEventArgs e)
-        {
-            int tempIndex = Index;
-            lrcManager.SetAllZero();
-            UpdateListBox(tempIndex);
         }
 
         private void FinishNewLine(object sender, System.Windows.Input.KeyEventArgs e)
@@ -329,14 +397,24 @@ namespace LrcMakerTest02
             }
         }
 
-        private void CopyLrcText(object sender, RoutedEventArgs e)
-        {
-            System.Windows.Clipboard.SetText(lrcManager.ContentInLines);
-        }
-
         private void ListBoxItem_MouseDoubleClick(object sender, RoutedEventArgs e)
         {
             CurrentTime = lrcManager.GetLineAt(Index).ActualTime.TotalSeconds;
+        }
+        private void AdjustLineTime(object sender, System.Windows.Input.MouseWheelEventArgs e)
+        {
+            if (!Time.TryParse(TimeBox.Text)) return;
+            Time newtime = Time.Parse(TimeBox.Text);
+            if (e.Delta > 0 && newtime + 0.05 < Time.Max)
+            {
+                TimeBox.Text = (Time.Parse(TimeBox.Text) + 0.05).ToString();
+                AmendLine(this, null);
+            }
+            else if (newtime - 0.05 > Time.Zero)
+            {
+                TimeBox.Text = (Time.Parse(TimeBox.Text) - 0.05).ToString();
+                AmendLine(this, null);
+            }
         }
     }
 }

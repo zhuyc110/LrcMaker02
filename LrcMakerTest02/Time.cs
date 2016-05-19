@@ -6,7 +6,13 @@ namespace LrcMakerTest02
 {
     struct Time
     {
+        /// <summary>
+        /// 单位为秒
+        /// </summary>
         private double time;
+        /// <summary>
+        /// 获取00:00.000时间格式下分钟部分的值
+        /// </summary>
         public int Minutes
         {
             get
@@ -14,6 +20,9 @@ namespace LrcMakerTest02
                 return (int)(time / 60);
             }
         }
+        /// <summary>
+        /// 获取00:00.000时间格式下秒钟部分的值
+        /// </summary>
         public int Seconds
         {
             get
@@ -21,6 +30,9 @@ namespace LrcMakerTest02
                 return (int)((time - 60 * Minutes));
             }
         }
+        /// <summary>
+        /// 获取00:00.000时间格式下毫秒部分的值（x1000）
+        /// </summary>
         public int Milliseconds
         {
             get
@@ -28,6 +40,9 @@ namespace LrcMakerTest02
                 return (int)Math.Round(1000 * (time - Math.Floor(time)));
             }
         }
+        /// <summary>
+        /// 获取00:00.000时间格式下毫秒部分的近似值（x1000并将个位数四舍五入）
+        /// </summary>
         public int ApproxMilliseconds
         {
             get
@@ -35,6 +50,9 @@ namespace LrcMakerTest02
                 return (int)(1000 * Math.Round((double)Milliseconds / 1000, 2));
             }
         }
+        /// <summary>
+        /// 获取时间对应的总秒数
+        /// </summary>
         public double TotalSeconds
         {
             get
@@ -46,6 +64,9 @@ namespace LrcMakerTest02
                 time = value;
             }
         }
+        /// <summary>
+        /// 获取时间对应的00:00.000格式的字符串
+        /// </summary>
         public string Info
         {
             get
@@ -53,6 +74,9 @@ namespace LrcMakerTest02
                 return string.Format("{0:00}:{1:00}.{2:000}", Minutes, Seconds, Milliseconds);
             }
         }
+        /// <summary>
+        /// 获取时间对应的00:00.000格式的字符串（毫秒数最低位四舍五入）
+        /// </summary>
         public string ApproxInfo
         {
             get
@@ -143,9 +167,17 @@ namespace LrcMakerTest02
         {
             return new Time(time1.TotalSeconds + time2.TotalSeconds);
         }
+        public static Time operator +(Time time1, double time2)
+        {
+            return new Time(time1.TotalSeconds + time2);
+        }
         public static Time operator -(Time time1, Time time2)
         {
             return new Time(time1.TotalSeconds - time2.TotalSeconds);
+        }
+        public static Time operator -(Time time1, double time2)
+        {
+            return new Time(time1.TotalSeconds - time2);
         }
         public static bool operator >(Time time1, Time time2)
         {
@@ -157,8 +189,12 @@ namespace LrcMakerTest02
             if (time1 > time2 || time1.time == time2.time) return false;
             else return true;
         }
-        public static readonly Time Empty = new Time(0);
+        public static readonly Time Zero = new Time(0);
         public static readonly Time Max = new Time(215999.999);
         public static readonly Time Min = new Time(-215999.999);
+        public override string ToString()
+        {
+            return Info;
+        }
     }
 }
