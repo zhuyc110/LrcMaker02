@@ -29,9 +29,35 @@ namespace LrcMakerTest02
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             UpdateListBox();
-
             TimeBox.Clear();
             LrcBox.Clear();
+
+            if (File.Exists("temp.txt"))
+            {
+                lrcManager.LoadFromFileName("temp.txt");
+                UpdateListBox();
+            }
+        }
+        private void MainForm_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (lrcManager.LrcList.Count > 0)
+            {
+                if (System.Windows.MessageBox.Show("是否将当前的歌词文本保存为本地临时文件（temp.txt）？", "提示", MessageBoxButton.OKCancel)
+                    == System.Windows.MessageBoxResult.OK)
+                {
+                    StreamWriter sw = new StreamWriter("temp.txt");
+                    sw.Write(lrcManager.ContentInLines);
+                    sw.Close();
+                    sw.Dispose();
+                }
+                else
+                {
+                    if(File.Exists("temp.txt"))
+                    {
+                        File.Delete("temp.txt");
+                    }
+                }
+            }
         }
 
         LrcManager lrcManager = new LrcManager();
@@ -147,6 +173,7 @@ namespace LrcMakerTest02
             }
             lrcManager.LoadFromFileName(dialog.FileName);
             UpdateListBox();
+            dialog.Dispose();
         }
         private void ImportLrcFromClipboard(object sender, RoutedEventArgs e)
         {
@@ -192,6 +219,7 @@ namespace LrcMakerTest02
             {
                 StreamWriter sw = new StreamWriter(dialog.FileName);
                 sw.Write(lrcManager.ContentInLines);
+                sw.Close();
                 sw.Dispose();
             }
         }
@@ -201,6 +229,21 @@ namespace LrcMakerTest02
         }
         private void ShiftAll(object sender, RoutedEventArgs e)
         {
+            string offsetText = InputBox.Input("请输入偏移时间（秒）：");
+            if (string.IsNullOrEmpty(offsetText)) return;
+            double offset;
+            if (double.TryParse(offsetText, out offset))
+            {
+                if (Math.Abs(offset) <= 3600)
+                {
+                    lrcManager.ShiftAll(offset);
+                    UpdateListBox();
+                }
+                else
+                    System.Windows.MessageBox.Show("您输入的时间偏差超过1小时，系统认为您可能输入有误。");
+            }
+            else
+                System.Windows.MessageBox.Show("您输入的数字有误，请重试。");
         }
 
         void UpdateListBox()
@@ -274,7 +317,7 @@ namespace LrcMakerTest02
                 lrcManager.RemoveLineAt(tempIndex);
                 UpdateListBox(tempIndex - 1);
             }
-            if (LrcListBox.Items.Count==0)
+            if (LrcListBox.Items.Count == 0)
             {
                 LrcBox.Text = "";
                 TimeBox.Text = "";
@@ -416,5 +459,6 @@ namespace LrcMakerTest02
                 AmendLine(this, null);
             }
         }
+
     }
 }

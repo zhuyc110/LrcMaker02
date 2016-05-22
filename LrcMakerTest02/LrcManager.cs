@@ -238,5 +238,19 @@ namespace LrcMakerTest02
                 lrc.ActualTime = new Time(0);
             }
         }
+        /// <summary>
+        /// 将所有歌词行的时间整体偏移
+        /// </summary>
+        /// <param name="offset"></param>
+        public void ShiftAll(double offset)
+        {
+            // 这里假设输入的offset是合理的
+            foreach (Lrc line in lrcList)
+            {
+                double temp = line.ActualTime.TotalSeconds + offset;
+                if (temp < 0) temp = 0;
+                line.ActualTime = new Time(temp);
+            }
+        }
     }
 }

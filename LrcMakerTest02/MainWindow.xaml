@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:System="clr-namespace:System;assembly=mscorlib" x:Class="LrcMakerTest02.MainWindow"
-        Title="歌词制作器" Height="600" Width="800" MinWidth="630" 
+        Title="歌词制作器" Height="600" Width="800" MinWidth="630" Closing="MainForm_Closing"
     Loaded="Window_Loaded" FontFamily="Microsoft Yahei" Icon="Note_Book_Fountain_pen_128px_504105_easyicon.net.ico">
     <Grid>
         <Grid.RowDefinitions>
@@ -38,7 +38,7 @@
                 <MenuItem Header="时间全部重置" Click="SetAllZero"/>
                 <MenuItem Header="插入歌曲信息" IsEnabled="False"/>
                 <MenuItem Header="删除所有空行" IsEnabled="False"/>
-                <MenuItem Header="时间整体偏移" IsEnabled="False" Click="ShiftAll"/>
+                <MenuItem Header="时间整体偏移" IsEnabled="True" Click="ShiftAll"/>
             </MenuItem>
             <MenuItem Header="相关">
                 <MenuItem Header="帮助" Click="Help_Click"/>
@@ -74,14 +74,14 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Button Name="PlayPause" Content="播放" Style="{StaticResource Button}" Click="Play" Background="LightGreen"/>
-                <Button Content="停止" Grid.Column="1" Style="{StaticResource Button}" Click="Stop" Background="#FFFF7878"/>
+                <Button Name="PlayPause" Content="播放" Style="{StaticResource Button}" Click="Play" Background="LightGreen" ToolTip="播放/暂停当前音乐"/>
+                <Button Content="停止" Grid.Column="1" Style="{StaticResource Button}" Click="Stop" Background="#FFFF7878" ToolTip="停止播放"/>
                 <Button Content="＜-5s" Grid.Row="1" Style="{StaticResource Button}" Click="Backward5"/>
                 <Button Content=" +5s＞" Grid.Row="1" Grid.Column="1" Style="{StaticResource Button}" Click="Forward5"/>
                 <Button Content="＜-1s" Grid.Row="2" Style="{StaticResource Button}" Click="Backward1"/>
                 <Button Content="+1s＞" Grid.Row="2" Grid.Column="1" Style="{StaticResource Button}" Click="Forward1"/>
             </Grid>
-            <CheckBox VerticalContentAlignment="Center" Content="毫秒取近似" Margin="10,5" FontSize="11pt" IsEnabled="False"/>
+            <CheckBox VerticalContentAlignment="Center" Content="毫秒取近似" Name="Approx" Margin="10,5" FontSize="11pt" IsEnabled="False"/>
             <CheckBox VerticalContentAlignment="Center" Content="播放时测试" Name="PlayAndTest" Margin="10,5" FontSize="11pt"/>
             <TextBlock Text="时间偏差(ms)：" Margin="5,10,5,5" FontSize="11pt"/>
             <TextBox Name="TimeOffset" Margin="5" Width="120" FontSize="12pt" Text="-200" HorizontalContentAlignment="Left" HorizontalAlignment="Left"/>
@@ -91,8 +91,8 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button Content="更新" Margin="5,5,0,5" FontSize="11pt" Background="White" Click="AmendLineAtTime" Padding="3"/>
-            <Button Content="修改" Grid.Column="1" Margin="5,5,0,5" FontSize="11pt" Background="White" Click="AmendLine" Padding="3"/>
+            <Button Content="更新" Margin="5,5,0,5" FontSize="11pt" Background="White" Click="AmendLineAtTime" Padding="3" ToolTip="将当前音乐的播放位置替换选中行的时间"/>
+            <Button Content="修改" Grid.Column="1" Margin="5,5,0,5" FontSize="11pt" Background="White" Click="AmendLine" Padding="3" ToolTip="将下方的时间与歌词替换上方选中行的内容"/>
         </Grid>
         <Grid Grid.Column="1" Grid.Row="1">
             <Grid.RowDefinitions>
@@ -133,9 +133,9 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Button Name="NewLineButton" Content="插入行" Style="{StaticResource Button}" Click="InsertNewLine"/>
+                <Button Name="NewLineButton" Content="插入行" Style="{StaticResource Button}" Click="InsertNewLine" ToolTip="在选中行的下方添加新行"/>
                 <!--<Button Content="插入行" Style="{StaticResource Button}" Click="InsertLine"/>-->
-                <Button Content="删除行" Grid.Column="1" Style="{StaticResource Button}" Click="DeleteLine"/>
+                <Button Content="删除行" Grid.Column="1" Style="{StaticResource Button}" Click="DeleteLine" ToolTip="删除选中行"/>
                 <Button Content="↑上移" Grid.Column="2" Style="{StaticResource Button}" Click="MoveLineUp"/>
                 <Button Content="↓下移" Grid.Column="3" Style="{StaticResource Button}" Click="MoveLineDown"/>
                 <Button Content="撤销"   Grid.Column="4" Style="{StaticResource Button}" Click="Cancel" IsEnabled="False"/>
