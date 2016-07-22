@@ -4,6 +4,15 @@
         xmlns:System="clr-namespace:System;assembly=mscorlib" x:Class="LrcMakerTest02.MainWindow"
         Title="歌词制作器" Height="600" Width="800" MinWidth="630" Closing="MainForm_Closing"
     Loaded="Window_Loaded" FontFamily="Microsoft Yahei" Icon="Note_Book_Fountain_pen_128px_504105_easyicon.net.ico">
+    <Window.Resources>
+        <RoutedUICommand x:Key="RefreshButtonShortCut"/>
+    </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Command="{StaticResource RefreshButtonShortCut}" Gesture="F5"/>
+    </Window.InputBindings>
+    <Window.CommandBindings>
+        <CommandBinding Command="{StaticResource RefreshButtonShortCut}" Executed="AmendLineAtTime"/>
+    </Window.CommandBindings>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

@@ -20,30 +20,18 @@ namespace LrcMakerTest02
         public void LoadFromString(string content)
         {
             Clear();
-            string[] list = content.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-            // 逐行添加到LrcList中，并检查是否为空行（包括只有空格的行）
-            Regex emptyCheck = new Regex(@"\s*");
+            string[] list = content.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
             foreach (string temp in list)
             {
-                // 如果空白的长度与整行内容的长度相同，则表明为空白行
-                if (emptyCheck.Match(temp).Length == temp.Length)
-                    continue;
-                else
+                Regex timeCheck = new Regex(@"\[[^\]]+\]");
+                Regex LrcCheck = new Regex(@"(?<=\])[^\[]*$");
+                MatchCollection mc = timeCheck.Matches(temp);
+                foreach (Match m in mc)
                 {
-                    // 以下的方法不能识别一行中的多个时间
-                    //Lrc l = new Lrc(temp);
-                    //lrcList.Add(l);
-                    // 因此采用新方法
-                    Regex timeCheck = new Regex(@"\[[^\]]+\]");
-                    Regex LrcCheck = new Regex(@"(?<=\])[^\[]*$");
-                    MatchCollection mc = timeCheck.Matches(temp);
-                    foreach (Match m in mc)
-                    {
-                        string lrc = m.ToString() + LrcCheck.Match(temp).ToString();
-                        lrcList.Add(new Lrc(lrc));
-                    }
-                    SortByTime();
+                    string lrc = m.ToString() + LrcCheck.Match(temp).ToString();
+                    lrcList.Add(new Lrc(lrc));
                 }
+                SortByTime();
             }
         }
         /// <summary>
@@ -54,19 +42,11 @@ namespace LrcMakerTest02
         public void LoadFromStringWithoutTime(string content)
         {
             Clear();
-            string[] list = content.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-            // 逐行添加到LrcList中，并检查是否为空行（包括只有空格的行）
-            Regex emptyCheck = new Regex(@"\s*");
+            string[] list = content.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
             foreach (string temp in list)
             {
-                // 如果空白的长度与整行内容的长度相同，则表明为空白行
-                if (emptyCheck.Match(temp).Length == temp.Length)
-                    continue;
-                else
-                {
-                    Lrc l = new Lrc("[00:00.000]" + temp);
-                    lrcList.Add(l);
-                }
+                Lrc l = new Lrc("[00:00.000]" + temp);
+                lrcList.Add(l);
             }
         }
         /// <summary>

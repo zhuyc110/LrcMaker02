@@ -284,6 +284,7 @@ namespace LrcMakerTest02
             UpdateListBox(tempIndex);
             LrcBox.Focus();
             MediaPlayer.Pause();
+            PlayPause.Content = "播放";
         }
         private void InsertLine(object sender, RoutedEventArgs e)
         {
