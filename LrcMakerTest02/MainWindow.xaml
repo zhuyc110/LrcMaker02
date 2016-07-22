@@ -7,6 +7,12 @@
     <Window.Resources>
         <RoutedUICommand x:Key="RefreshButtonShortCut"/>
     </Window.Resources>
+    <Window.Background>
+        <LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
+            <GradientStop Color="#FFD5F59C" Offset="1"/>
+            <GradientStop Color="White"/>
+        </LinearGradientBrush>
+    </Window.Background>
     <Window.InputBindings>
         <KeyBinding Command="{StaticResource RefreshButtonShortCut}" Gesture="F5"/>
     </Window.InputBindings>
@@ -23,7 +29,7 @@
             <ColumnDefinition Width="2*" MinWidth="130px"/>
             <ColumnDefinition Width="9*"/>
         </Grid.ColumnDefinitions>
-        <Menu Grid.ColumnSpan="2" FontSize="12pt" Height="26" Background="White">
+        <Menu Grid.ColumnSpan="2" FontSize="12pt" Height="26" Background="#FFFFFFF6" FontFamily="Microsoft Yahei">
             <MenuItem Header="文件" Height="24">
                 <MenuItem Header="导入音频" Click="OpenMusicFile"/>
                 <MenuItem Header="导入歌词">
@@ -64,15 +70,19 @@
                 </Style>
             </StackPanel.Resources>
             <MediaElement x:Name="MediaPlayer" Height="0" LoadedBehavior="Manual" Visibility="Collapsed"
-                          MediaOpened="MediaPlayer_MediaOpened"/>
+                          MediaOpened="MediaPlayer_MediaOpened" Volume="1"/>
             <TextBlock Text=" 歌曲时长：" Margin="5" FontSize="12pt"/>
             <TextBox IsReadOnly="True" HorizontalContentAlignment="Center" Margin="5" FontSize="12pt" x:Name="TotalLength">
                 00:00.000
             </TextBox>
             <TextBlock Text=" 当前位置：" Margin="5" FontSize="12pt"/>
-            <TextBox IsReadOnly="True" HorizontalContentAlignment="Center"  Margin="5" FontSize="12pt" x:Name="CurrentPosition">
-                00:00.000
-            </TextBox>
+            <Grid>
+                <TextBox Margin="5" Background="White" BorderBrush="#00000000"/>
+                <TextBox Margin="5" HorizontalAlignment="Left" Name="CurrentPositionBar" Background="LightSteelBlue" Width="100" BorderBrush="#00000000"/>
+                <TextBox IsReadOnly="True" HorizontalContentAlignment="Center"  Margin="5" FontSize="12pt" x:Name="CurrentPosition" Background="#00000000">
+                    00:00.000
+                </TextBox>
+            </Grid>
             <Grid Margin="0,5">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
@@ -87,10 +97,10 @@
                 <Button Content="停止" Grid.Column="1" Style="{StaticResource Button}" Click="Stop" Background="#FFFF7878" ToolTip="停止播放"/>
                 <Button Content="＜-5s" Grid.Row="1" Style="{StaticResource Button}" Click="Backward5"/>
                 <Button Content=" +5s＞" Grid.Row="1" Grid.Column="1" Style="{StaticResource Button}" Click="Forward5"/>
-                <Button Content="＜-1s" Grid.Row="2" Style="{StaticResource Button}" Click="Backward1"/>
-                <Button Content="+1s＞" Grid.Row="2" Grid.Column="1" Style="{StaticResource Button}" Click="Forward1"/>
+                <Button Content="＜-2s" Grid.Row="2" Style="{StaticResource Button}" Click="Backward1"/>
+                <Button Content="+2s＞" Grid.Row="2" Grid.Column="1" Style="{StaticResource Button}" Click="Forward1"/>
             </Grid>
-            <CheckBox VerticalContentAlignment="Center" Content="毫秒取近似" Name="Approx" Margin="10,5" FontSize="11pt" IsEnabled="False"/>
+            <CheckBox VerticalContentAlignment="Center" Content="毫秒取近似" Name="Approx" Margin="10,5" FontSize="11pt" IsEnabled="False" Visibility="Collapsed"/>
             <CheckBox VerticalContentAlignment="Center" Content="播放时测试" Name="PlayAndTest" Margin="10,5" FontSize="11pt"/>
             <TextBlock Text="时间偏差(ms)：" Margin="5,10,5,5" FontSize="11pt"/>
             <TextBox Name="TimeOffset" Margin="5" Width="120" FontSize="12pt" Text="-200" HorizontalContentAlignment="Left" HorizontalAlignment="Left"/>
@@ -100,7 +110,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button Content="更新" Margin="5,5,0,5" FontSize="11pt" Background="White" Click="AmendLineAtTime" Padding="3" ToolTip="将当前音乐的播放位置替换选中行的时间"/>
+            <Button Content="更新" Margin="5,5,0,5" FontSize="11pt" Background="White" Click="AmendLineAtTime" Padding="3" ToolTip="将当前音乐的播放位置替换选中行的时间（F5）"/>
             <Button Content="修改" Grid.Column="1" Margin="5,5,0,5" FontSize="11pt" Background="White" Click="AmendLine" Padding="3" ToolTip="将下方的时间与歌词替换上方选中行的内容"/>
         </Grid>
         <Grid Grid.Column="1" Grid.Row="1">
@@ -109,7 +119,7 @@
                 <RowDefinition Height="38"/>
             </Grid.RowDefinitions>
             <ListBox Margin="5,5,5,0" Name="LrcListBox" MouseLeftButtonUp="LrcListBox_MouseLeftButtonUp" MouseRightButtonUp="LrcListBox_MouseRightButtonUp" 
-                     SelectionChanged="LrcListBox_SelectionChanged" FontSize="12pt">
+                     SelectionChanged="LrcListBox_SelectionChanged" FontSize="12pt" Background="#66FDFDFD">
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
                         <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick"/>
@@ -148,7 +158,7 @@
                 <Button Content="↑上移" Grid.Column="2" Style="{StaticResource Button}" Click="MoveLineUp"/>
                 <Button Content="↓下移" Grid.Column="3" Style="{StaticResource Button}" Click="MoveLineDown"/>
                 <Button Content="撤销"   Grid.Column="4" Style="{StaticResource Button}" Click="Cancel" IsEnabled="False"/>
-                <Button Content="清空"   Grid.Column="5" Style="{StaticResource Button}" Click="ClearAll"/>
+                <Button Content="清空"   Grid.Column="5" Style="{StaticResource Button}" Click="ClearAll" ToolTip="清空歌词列表"/>
             </Grid>
         </Grid>
         <Grid Grid.Column="1" Grid.Row="2">
@@ -156,10 +166,8 @@
                 <ColumnDefinition Width="50*"/>
                 <ColumnDefinition Width="281*"/>
             </Grid.ColumnDefinitions>
-            <TextBox Name="TimeBox" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" KeyDown="FinishNewLine" 
-                     Margin="5,5,0,5" FontSize="14px" Text="00:00.000" MouseWheel="AdjustLineTime"/>
-            <TextBox Name="LrcBox" VerticalContentAlignment="Center" 
-                     Margin="5" FontSize="14px" Grid.Column="1" KeyDown="FinishNewLine" Text="Testing"/>
+            <TextBox Name="TimeBox" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" KeyDown="FinishNewLine" Margin="5,5,0,5" FontSize="14px" Text="00:00.000" MouseWheel="AdjustLineTime" ToolTip="可以使用鼠标滚轮进行快速调整" Background="#7FFFFFFF"/>
+            <TextBox Name="LrcBox" VerticalContentAlignment="Center" Margin="5" FontSize="14px" Grid.Column="1" KeyDown="FinishNewLine" Text="Testing" ToolTip="按下Enter可以执行修改，并继续播放音乐" Background="#7FFFFFFF"/>
         </Grid>
     </Grid>
 </Window>

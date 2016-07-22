@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -31,6 +29,7 @@ namespace LrcMakerTest02
             UpdateListBox();
             TimeBox.Clear();
             LrcBox.Clear();
+            CurrentPositionBar.Width = 0;
 
             if (File.Exists("temp.txt"))
             {
@@ -50,43 +49,22 @@ namespace LrcMakerTest02
                     sw.Close();
                     sw.Dispose();
                 }
-                else
-                {
-                    if(File.Exists("temp.txt"))
-                    {
-                        File.Delete("temp.txt");
-                    }
-                }
+                //else
+                //{
+                //    if (File.Exists("temp.txt"))
+                //    {
+                //        File.Delete("temp.txt");
+                //    }
+                //}
             }
         }
 
         LrcManager lrcManager = new LrcManager();
         DispatcherTimer timer;
 
-        string MusicFileName = string.Empty;
-        private void OpenMusicFile(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Filter = "音频文件|*.mp3;*.wav;*.ape;*.aac;*.ogg;*.wma";
-            dialog.Multiselect = false;
-            dialog.Title = "打开音频文件";
-            DialogResult result = dialog.ShowDialog();
-            if (result != System.Windows.Forms.DialogResult.OK)
-            {
-                dialog.Dispose();
-                return;
-            }
-            MusicFileName = dialog.FileName;
-            MediaPlayer.Source = new Uri(MusicFileName);
-            // 检查是否有本地歌词
-            //string lrcPath = Path.GetFileNameWithoutExtension(dialog.FileName) + ".lrc";
-            //dialog.Dispose();
-            //if (!File.Exists(lrcPath)) return;
-            //var result2 = System.Windows.MessageBox.Show("发现本地关联歌词，是否导入？");
-            //if (result != System.Windows.Forms.DialogResult.OK) return;
-        }
-
         private bool isPlaying = false;
+
+        // 音乐控制按钮
         private void Play(object sender, RoutedEventArgs e)
         {
             if (MediaPlayer.Source == null) return;
@@ -122,16 +100,24 @@ namespace LrcMakerTest02
         }
         private void Forward1(object sender, RoutedEventArgs e)
         {
-            MediaPlayer.Position += new TimeSpan(0, 0, 1);
+            MediaPlayer.Position += new TimeSpan(0, 0, 2);
         }
         private void Backward1(object sender, RoutedEventArgs e)
         {
-            MediaPlayer.Position -= new TimeSpan(0, 0, 1);
+            MediaPlayer.Position -= new TimeSpan(0, 0, 2);
         }
 
         void TickEvent(object sender, EventArgs e)
         {
             CurrentPosition.Text = Time.Parse(CurrentTime).Info;
+            if (MediaPlayer.NaturalDuration.HasTimeSpan)
+            {
+                var current = MediaPlayer.Position.TotalMilliseconds;
+                var total = MediaPlayer.NaturalDuration.TimeSpan.TotalMilliseconds;
+                var process = current / total;
+                CurrentPositionBar.Width = CurrentPosition.ActualWidth * process;
+                //LrcBox.Text = string.Format("{0}, {1}, {2}",current, total, process);
+            }
 
             // 播放并测试
             if (PlayAndTest.IsChecked.Value && LrcListBox.Items.Count > 0 && isPlaying)
@@ -153,6 +139,31 @@ namespace LrcMakerTest02
             }
         }
 
+        string MusicFileName = string.Empty;
+        private void OpenMusicFile(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "音频文件|*.mp3;*.wav;*.ape;*.aac;*.ogg;*.wma";
+            dialog.Multiselect = false;
+            dialog.Title = "打开音频文件";
+            DialogResult result = dialog.ShowDialog();
+            if (result != System.Windows.Forms.DialogResult.OK)
+            {
+                dialog.Dispose();
+                return;
+            }
+            dialog.Dispose();
+            MusicFileName = dialog.FileName;
+            MediaPlayer.Source = new Uri(MusicFileName);
+            MediaPlayer.Stop();
+            //检查是否有本地歌词
+            string lrcPath = Path.GetDirectoryName(dialog.FileName) + "//" + Path.GetFileNameWithoutExtension(dialog.FileName) + ".lrc";
+            if (!File.Exists(lrcPath)) return;
+            var result2 = System.Windows.MessageBox.Show("发现本地关联歌词，是否导入？");
+            if (result2 != MessageBoxResult.OK) return;
+            lrcManager.LoadFromFileName(lrcPath);
+            UpdateListBox();
+        }
         private void MediaPlayer_MediaOpened(object sender, RoutedEventArgs e)
         {
             TotalLength.Text = Time.Parse(MediaPlayer.NaturalDuration.TimeSpan).Info;
