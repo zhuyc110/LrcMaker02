@@ -3,26 +3,28 @@ using System.Text.RegularExpressions;
 
 namespace LrcMakerTest02
 {
-    class Lrc : IComparable
+    internal class Lrc : IComparable
     {
         /// <summary>
-        /// 歌词行对应的文字
+        /// 返回在歌词文件中应该呈现出的单行文字（[时间]歌词）
         /// </summary>
-        public string LrcContent = string.Empty;
-        /// <summary>
-        /// 歌词行对应的时间
-        /// </summary>
-        public Time ActualTime = Time.Zero;
+        public string Info
+        {
+            get { return "[" + ActualTime.Info + "]" + LrcContent; }
+        }
+
         public Lrc(double time, string content)
         {
             LrcContent = content;
             ActualTime = Time.Parse(time);
         }
+
         public Lrc(Time time, string content)
         {
             LrcContent = content;
             ActualTime = new Time(time);
         }
+
         /// <summary>
         /// 传入一行信息，并自动分析出时间和文字
         /// </summary>
@@ -43,17 +45,14 @@ namespace LrcMakerTest02
                 ActualTime = Time.Parse(t);
             }
         }
+
         public Lrc()
         {
             // Nothing
         }
-        /// <summary>
-        /// 返回在歌词文件中应该呈现出的单行文字（[时间]歌词）
-        /// </summary>
-        public string Info
-        {
-            get { return "[" + ActualTime.Info + "]" + LrcContent; }
-        }
+
+        #region IComparable Members
+
         /// <summary>
         /// 用于按时间排列的参考依据
         /// </summary>
@@ -61,10 +60,26 @@ namespace LrcMakerTest02
         /// <returns></returns>
         public int CompareTo(object obj)
         {
-            Lrc o = (Lrc)obj;
+            Lrc o = (Lrc) obj;
             if (ActualTime > o.ActualTime) return 1;
             else if (ActualTime.TotalSeconds == o.ActualTime.TotalSeconds) return 0;
             else return -1;
         }
+
+        #endregion
+
+        #region Fields
+
+        /// <summary>
+        /// 歌词行对应的文字
+        /// </summary>
+        public string LrcContent = string.Empty;
+
+        /// <summary>
+        /// 歌词行对应的时间
+        /// </summary>
+        public Time ActualTime = Time.Zero;
+
+        #endregion
     }
 }

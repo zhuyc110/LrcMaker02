@@ -8,14 +8,14 @@
         Title="InputBox" Height="107" Width="200" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <TextBlock Name="Notice" Text="请输入：" Margin="3,3,3,0" FontFamily="Microsoft Yahei" FontSize="11pt"/>
+        <TextBlock Name="Notice" Text="请输入：" Margin="3,3,3,0" FontFamily="Microsoft Yahei" FontSize="11pt" />
         <TextBox Name="Inputbox" Grid.Row="1" Margin="3" FontFamily="Microsoft Yahei" FontSize="11pt" Text="12345"
-                 KeyDown="Input_KeyDown"/>
-        <Button Name="Confirm" Grid.Row="2" HorizontalAlignment="Right" Content="确定" Margin="3,0,3,3" Width="40" Background="White" 
-                FontSize="11pt" Click="Confirm_Click"/>
+                 KeyDown="Input_KeyDown" />
+        <Button Name="Confirm" Grid.Row="2" HorizontalAlignment="Right" Content="确定" Margin="3,0,3,3" Width="40" Background="White"
+                FontSize="11pt" Click="Confirm_Click" />
     </Grid>
 </Window>

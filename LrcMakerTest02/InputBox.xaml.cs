@@ -13,7 +13,7 @@ namespace LrcMakerTest02
             InitializeComponent();
         }
 
-        public static string Input(string HintText = "请输入：", string DefaultText = "", 
+        public static string Input(string HintText = "请输入：", string DefaultText = "",
             string Title = "提示", string ButtonText = "确认")
         {
             InputBox input = new InputBox();
@@ -27,10 +27,13 @@ namespace LrcMakerTest02
             return input.Inputbox.Text;
         }
 
+        #region Private methods
+
         private void Confirm_Click(object sender, RoutedEventArgs e)
         {
             Close();
         }
+
         private void Input_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -43,5 +46,7 @@ namespace LrcMakerTest02
                 Close();
             }
         }
+
+        #endregion
     }
 }
