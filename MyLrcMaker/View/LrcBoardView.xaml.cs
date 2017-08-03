@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Composition;
+using MyLrcMaker.Infrastructure;
 using MyLrcMaker.ViewModel;
 
 namespace MyLrcMaker.View
@@ -8,13 +9,15 @@ namespace MyLrcMaker.View
     /// </summary>
     [Export(typeof(LrcBoardView))]
     [PartCreationPolicy(CreationPolicy.Shared)]
-    public partial class LrcBoardView
+    public partial class LrcBoardView : IView<LrcBoardViewModel>
     {
         [Import]
         public LrcBoardViewModel ViewModel
         {
             set => DataContext = value;
         }
+
+        public string Title => "Lrc board";
 
         public LrcBoardView()
         {

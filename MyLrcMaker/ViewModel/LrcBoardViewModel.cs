@@ -2,6 +2,7 @@
 using System.ComponentModel.Composition;
 using System.Windows.Forms;
 using System.Windows.Input;
+using MyLrcMaker.Infrastructure;
 using MyLrcMaker.Model;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -16,18 +17,29 @@ namespace MyLrcMaker.ViewModel
 
         public ICommand SaveLrcCommand { get; }
 
+        public ICommand EditLrcCommand { get; }
+
         public ObservableCollection<ILrcModel> LrcSource { get; set; }
 
+        public ILrcModel SelectedLrcModel { get; set; }
+
         [ImportingConstructor]
-        public LrcBoardViewModel(ILrcManager lrcManager)
+        public LrcBoardViewModel(ILrcManager lrcManager, IIOService ioService)
         {
             _lrcManager = lrcManager;
+            _ioService = ioService;
             OpenLrcCommand = new DelegateCommand(LoadLrc);
             SaveLrcCommand = new DelegateCommand(SaveLrc);
+            EditLrcCommand = new DelegateCommand(EditLrc);
             LrcSource = new ObservableCollection<ILrcModel>(lrcManager.LrcModels);
         }
 
         #region Private methods
+
+        private void EditLrc()
+        {
+            _ioService.ShowDialog(new EditLrcViewModel(SelectedLrcModel));
+        }
 
         private void LoadLrc()
         {
@@ -59,6 +71,7 @@ namespace MyLrcMaker.ViewModel
         #region Fields
 
         private readonly ILrcManager _lrcManager;
+        private readonly IIOService _ioService;
 
         #endregion
     }
