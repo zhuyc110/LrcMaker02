@@ -38,7 +38,7 @@ namespace MyLrcMaker.ViewModel
 
         private void EditLrc()
         {
-            _ioService.ShowDialog(new EditLrcViewModel(SelectedLrcModel));
+            _ioService.ShowDialog(new EditLrcViewModel(SelectedLrcModel), new DialogSetting {Height = 100, Width = 250});
         }
 
         private void LoadLrc()
@@ -57,7 +57,7 @@ namespace MyLrcMaker.ViewModel
 
         private void SaveLrc()
         {
-            using (var sfd = new SaveFileDialog{ Filter = "歌词文件|*.txt;*.lrc" , Title = "保存歌词文件" })
+            using (var sfd = new SaveFileDialog {Filter = "歌词文件|*.txt;*.lrc", Title = "保存歌词文件"})
             {
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {

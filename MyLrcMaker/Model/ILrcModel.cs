@@ -4,7 +4,7 @@ namespace MyLrcMaker.Model
 {
     public interface ILrcModel
     {
-        TimeSpan Time { get; }
+        TimeSpan Time { get; set; }
 
         string Text { get; }
     }

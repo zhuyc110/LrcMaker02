@@ -17,26 +17,26 @@ namespace MyLrcMaker.Infrastructure
 
         #region IIOService Members
 
-        public void ShowDialog<TViewModel>(TViewModel viewModel) where TViewModel : BindableBase
+        public void ShowDialog<TViewModel>(TViewModel viewModel, DialogSetting dialogSetting = null) where TViewModel : BindableBase
         {
             var view = _serviceLocator.GetInstance<IView<TViewModel>>();
             view.ViewModel = viewModel;
-            ShowView(view);
+            ShowView(view, dialogSetting);
         }
 
         #endregion
 
         #region Private methods
 
-        private static void ShowView<TViewModel>(IView<TViewModel> view) where TViewModel : BindableBase
+        private static void ShowView<TViewModel>(IView<TViewModel> view, DialogSetting dialogSetting = null) where TViewModel : BindableBase
         {
             var window = new Window
             {
                 Owner = Application.Current.MainWindow,
                 Title = view.Title,
                 Content = view,
-                Width = 200,
-                Height = 300,
+                Width = dialogSetting?.Width ?? 200,
+                Height = dialogSetting?.Height ?? 300,
                 ResizeMode = ResizeMode.NoResize,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             };

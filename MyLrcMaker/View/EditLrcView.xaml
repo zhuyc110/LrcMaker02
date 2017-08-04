@@ -1,12 +1,28 @@
-﻿<UserControl x:Class="MyLrcMaker.View.EditLrcView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:MyLrcMaker.View"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+﻿<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+    xmlns:viewModel="clr-namespace:MyLrcMaker.ViewModel"
+    x:Class="MyLrcMaker.View.EditLrcView"
+    mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance {x:Type viewModel:EditLrcViewModel}, IsDesignTimeCreatable=True}"
+    d:DesignHeight="100" d:DesignWidth="250">
     <Grid>
-            
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="2.1*" />
+        </Grid.ColumnDefinitions>
+        <toolkit:IntegerUpDown Grid.Row="0" Maximum="59" Minimum="0" Grid.Column="0" Text="{Binding Minutes, UpdateSourceTrigger=PropertyChanged}" Margin="1" />
+        <toolkit:IntegerUpDown Grid.Row="1" Maximum="59" Minimum="0" Grid.Column="0" Text="{Binding Seconds, UpdateSourceTrigger=PropertyChanged}" Margin="1" />
+        <toolkit:IntegerUpDown Grid.Row="2" Maximum="999" Minimum="0" Grid.Column="0" Text="{Binding Milliseconds, UpdateSourceTrigger=PropertyChanged}"
+                               Margin="1" />
+        <TextBox Grid.Row="0" Grid.RowSpan="3" Grid.Column="1" Margin="3" Text="{Binding LrcModel.Text}" TextWrapping="Wrap" />
     </Grid>
 </UserControl>

@@ -8,6 +8,6 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        <ContentControl Grid.Row="0" prism:RegionManager.RegionName="MainRegion" Margin="10"/>
+        <ContentControl Grid.Row="0" prism:RegionManager.RegionName="MainRegion" Margin="10" />
     </Grid>
 </Window>

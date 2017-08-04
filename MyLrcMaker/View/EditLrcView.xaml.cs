@@ -1,28 +1,61 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.Composition;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using MyLrcMaker.Infrastructure;
+using MyLrcMaker.ViewModel;
 
 namespace MyLrcMaker.View
 {
     /// <summary>
     /// EditLrcView.xaml 的交互逻辑
     /// </summary>
-    public partial class EditLrcView : UserControl
+    [Export(typeof(EditLrcView))]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
+    public partial class EditLrcView : IView<EditLrcViewModel>
     {
+        public EditLrcViewModel ViewModel
+        {
+            set => DataContext = value;
+            get => (EditLrcViewModel) DataContext;
+        }
+
+        public string Title => "编辑时间";
+
         public EditLrcView()
         {
             InitializeComponent();
+            Loaded += OnLoaded;
         }
+
+        #region Private methods
+
+        private void Dispose()
+        {
+            if (_isDisposed)
+            {
+                return;
+            }
+            ViewModel?.Dispose();
+            _isDisposed = true;
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            Unloaded += OnUnloaded;
+        }
+
+        private void OnUnloaded(object sender, RoutedEventArgs e)
+        {
+            Loaded -= OnLoaded;
+            Unloaded -= OnUnloaded;
+            Dispose();
+        }
+
+        #endregion
+
+        #region Fields
+
+        private bool _isDisposed;
+
+        #endregion
     }
 }
