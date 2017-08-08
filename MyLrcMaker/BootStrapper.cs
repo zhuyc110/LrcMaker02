@@ -23,6 +23,7 @@ namespace MyLrcMaker
 
         protected override void InitializeShell()
         {
+            Container.GetExportedValue<IRegionManager>().RegisterViewWithRegion("MainRegion", typeof(MainView));
             Container.GetExportedValue<IRegionManager>().RegisterViewWithRegion("MainRegion", typeof(LrcBoardView));
 
             Application.Current.MainWindow.Show();
