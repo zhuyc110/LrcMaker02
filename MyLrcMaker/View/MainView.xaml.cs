@@ -14,19 +14,22 @@ namespace MyLrcMaker.View
         public MainViewModel ViewModel
         {
             set => DataContext = value;
-            get => (MainViewModel)DataContext;
+            get => (MainViewModel) DataContext;
         }
 
         public string Title => "Main";
 
         [ImportingConstructor]
-        public MainView(MainViewModel mainViewModel)
+        public MainView(MainViewModel mainViewModel, ISongService songService)
         {
+            _songService = songService;
             InitializeComponent();
 
             ViewModel = mainViewModel;
             ViewModel.OnMediaPlayerStatusChange += ViewModelOnMediaPlayerStatusChange;
         }
+
+        #region Private methods
 
         private void ViewModelOnMediaPlayerStatusChange(object sender, MediaPlayerStatusChangeArgs e)
         {
@@ -34,14 +37,25 @@ namespace MyLrcMaker.View
             {
                 case MediaPlayerCommand.Play:
                     MediaElementPlayer.Play();
+                    _songService.Initialize(MediaElementPlayer);
                     break;
                 case MediaPlayerCommand.Pause:
+                    _songService.Release();
                     MediaElementPlayer.Pause();
                     break;
                 case MediaPlayerCommand.Stop:
+                    _songService.Release();
                     MediaElementPlayer.Stop();
                     break;
             }
         }
+
+        #endregion
+
+        #region Fields
+
+        private readonly ISongService _songService;
+
+        #endregion
     }
 }

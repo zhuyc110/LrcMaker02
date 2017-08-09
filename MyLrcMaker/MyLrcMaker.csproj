@@ -89,16 +89,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Converters\TimeSpanToStringConverter.cs" />
+    <Compile Include="Converters\DoubleToLrcFormatConverter.cs" />
+    <Compile Include="Converters\TimeSpanToLrcFormatConverter.cs" />
     <Compile Include="Extension\ICommandExtension.cs" />
     <Compile Include="Infrastructure\DialogSetting.cs" />
     <Compile Include="Infrastructure\IIOService.cs" />
     <Compile Include="Infrastructure\IOService.cs" />
     <Compile Include="Infrastructure\IView.cs" />
     <Compile Include="Infrastructure\ResultViewModel.cs" />
+    <Compile Include="Infrastructure\SongService.cs" />
     <Compile Include="Infrastructure\ViewModelBase.cs" />
     <Compile Include="Model\ILrcManager.cs" />
     <Compile Include="Model\ILrcModel.cs" />
+    <Compile Include="Infrastructure\ISongService.cs" />
     <Compile Include="Model\LrcManager.cs" />
     <Compile Include="Model\LrcModel.cs" />
     <Compile Include="ViewModel\EditLrcViewModel.cs" />

@@ -6,12 +6,12 @@
     xmlns:local="clr-namespace:MyLrcMaker.View"
     xmlns:model="clr-namespace:MyLrcMaker.Model"
     xmlns:viewModel="clr-namespace:MyLrcMaker.ViewModel"
-    xmlns:Converters="clr-namespace:MyLrcMaker.Converters" x:Class="MyLrcMaker.View.LrcBoardView"
+    xmlns:converters="clr-namespace:MyLrcMaker.Converters" x:Class="MyLrcMaker.View.LrcBoardView"
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance {x:Type viewModel:LrcBoardViewModel}, IsDesignTimeCreatable=True}"
     d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <Converters:TimeSpanToStringConverter x:Key="TimeSpanToStringConverter" />
+        <converters:TimeSpanToLrcFormatConverter x:Key="TimeSpanToLrcFormatConverter" />
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -34,7 +34,7 @@
             <ListView.ItemTemplate>
                 <DataTemplate DataType="{x:Type model:ILrcModel}">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Time, Converter={StaticResource TimeSpanToStringConverter}, Mode=OneWay, StringFormat={}[{0}]}" Margin="3" />
+                        <TextBlock Text="{Binding Time, Converter={StaticResource TimeSpanToLrcFormatConverter}, Mode=OneWay, StringFormat={}[{0}]}" Margin="3" />
                         <TextBlock Text="{Binding Text}" Margin="2" />
                         <StackPanel.InputBindings>
                             <MouseBinding MouseAction="LeftDoubleClick"

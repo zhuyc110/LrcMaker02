@@ -5,9 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:MyLrcMaker.View"
              xmlns:viewModel="clr-namespace:MyLrcMaker.ViewModel"
+             xmlns:converters="clr-namespace:MyLrcMaker.Converters"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance {x:Type viewModel:MainViewModel}, IsDesignTimeCreatable=True}"
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <converters:DoubleToLrcFormatConverter x:Key="DoubleToLrcFormatConverter" />
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -18,9 +22,25 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
-        <Button Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" Margin="2" VerticalAlignment="Top" Content="Open music" Command="{Binding Path=OpenMediaCommand}"/>
-        <Button Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" Margin="2" VerticalAlignment="Bottom" Content="Play music" Command="{Binding Path=PlayMediaCommand}" CommandParameter="{x:Static viewModel:MediaPlayerCommand.Play}"/>
-        <MediaElement x:Name="MediaElementPlayer" Grid.Column="1" HorizontalAlignment="Center" Grid.Row="0" VerticalAlignment="Center" Width="100" Height="20" Source="{Binding Path=MediaSource}" LoadedBehavior="Manual"/>
+        <Button Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" Margin="2" VerticalAlignment="Top" Content="Open music"
+                Command="{Binding Path=OpenMediaCommand}" />
+        <Button Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" Margin="2" VerticalAlignment="Bottom" Content="Play music"
+                Command="{Binding Path=PlayMediaCommand}" CommandParameter="{x:Static viewModel:MediaPlayerCommand.Play}" />
+        <MediaElement x:Name="MediaElementPlayer" Grid.Column="1" HorizontalAlignment="Center" Grid.Row="0" VerticalAlignment="Bottom" Width="100" Height="20"
+                      Source="{Binding Path=MediaSource}" LoadedBehavior="Manual" />
+        <Slider Grid.Row="0" Grid.Column="1"
+                x:Name="PositionSlider"
+                Minimum="0"
+                Maximum="{Binding Path=TotalLength}"
+                Value="{Binding Path=Current, Mode=OneWay}"/>
+        <TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock.Text>
+                <MultiBinding StringFormat="{}{0}/{1}">
+                    <Binding Path="Current" Converter="{StaticResource DoubleToLrcFormatConverter}"/>
+                    <Binding Path="TotalLength" Converter="{StaticResource DoubleToLrcFormatConverter}"/>
+                </MultiBinding>
+            </TextBlock.Text>
+        </TextBlock>
         <local:LrcBoardView Grid.Row="1" Grid.Column="1" DataContext="{Binding Path=LrcBoardViewModel}" />
     </Grid>
 </UserControl>
