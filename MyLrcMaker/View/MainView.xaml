@@ -6,11 +6,13 @@
              xmlns:local="clr-namespace:MyLrcMaker.View"
              xmlns:viewModel="clr-namespace:MyLrcMaker.ViewModel"
              xmlns:converters="clr-namespace:MyLrcMaker.Converters"
+             xmlns:controls="clr-namespace:MyLrcMaker.Controls"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance {x:Type viewModel:MainViewModel}, IsDesignTimeCreatable=True}"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <converters:DoubleToLrcFormatConverter x:Key="DoubleToLrcFormatConverter" />
+        <converters:DoubleToTimeSpanConverter x:Key="DoubleToTimeSpanConverter" />
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -22,17 +24,23 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
-        <Button Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" Margin="2" VerticalAlignment="Top" Content="Open music"
-                Command="{Binding Path=OpenMediaCommand}" />
-        <Button Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" Margin="2" VerticalAlignment="Bottom" Content="Play music"
-                Command="{Binding Path=PlayMediaCommand}" CommandParameter="{x:Static viewModel:MediaPlayerCommand.Play}" />
+        <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="0">
+            <Button HorizontalAlignment="Center" Margin="2" VerticalAlignment="Top" Content="Open music"
+                    Command="{Binding Path=OpenMediaCommand}" />
+            <Button HorizontalAlignment="Center" Margin="2" VerticalAlignment="Bottom" Content="Play music"
+                    Command="{Binding Path=PlayMediaCommand}" CommandParameter="{x:Static viewModel:MediaPlayerCommand.Play}" />
+            <Button HorizontalAlignment="Center" Margin="2" VerticalAlignment="Bottom" Content="Pause music"
+                    Command="{Binding Path=PauseMediaCommand}" CommandParameter="{x:Static viewModel:MediaPlayerCommand.Pause}" />
+
+        </StackPanel>
         <MediaElement x:Name="MediaElementPlayer" Grid.Column="1" HorizontalAlignment="Center" Grid.Row="0" VerticalAlignment="Bottom" Width="100" Height="20"
-                      Source="{Binding Path=MediaSource}" LoadedBehavior="Manual" />
+                      Source="{Binding Path=MediaSource}" LoadedBehavior="Manual"
+                      controls:MediaElementHelper.BindablePosition="{Binding ElementName=PositionSlider, Path=Value, Converter={StaticResource DoubleToTimeSpanConverter}}"/>
         <Slider Grid.Row="0" Grid.Column="1"
                 x:Name="PositionSlider"
                 Minimum="0"
                 Maximum="{Binding Path=TotalLength}"
-                Value="{Binding Path=Current, Mode=OneWay}"/>
+                Value="{Binding Path=Current}"/>
         <TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock.Text>
                 <MultiBinding StringFormat="{}{0}/{1}">

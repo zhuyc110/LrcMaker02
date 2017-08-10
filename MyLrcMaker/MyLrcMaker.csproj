@@ -89,7 +89,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\MediaElementHelper.cs" />
     <Compile Include="Converters\DoubleToLrcFormatConverter.cs" />
+    <Compile Include="Converters\DoubleToTimeSpanConverter.cs" />
     <Compile Include="Converters\TimeSpanToLrcFormatConverter.cs" />
     <Compile Include="Extension\ICommandExtension.cs" />
     <Compile Include="Infrastructure\DialogSetting.cs" />
@@ -171,8 +173,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controls\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

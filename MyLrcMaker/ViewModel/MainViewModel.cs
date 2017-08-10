@@ -23,6 +23,8 @@ namespace MyLrcMaker.ViewModel
 
         public ICommand PlayMediaCommand { get; }
 
+        public ICommand PauseMediaCommand { get; }
+
         public Uri MediaSource
         {
             get => _mediaSource;
@@ -44,7 +46,17 @@ namespace MyLrcMaker.ViewModel
         public double Current
         {
             get => _current;
-            set => SetProperty(ref _current, value);
+            set
+            {
+                if (SetProperty(ref _current, value))
+                {
+                    if (_songService.Current != Current)
+                    {
+                        _songService.Resume();
+                    }
+                }
+                
+            }
         }
 
         [ImportingConstructor]
@@ -55,9 +67,15 @@ namespace MyLrcMaker.ViewModel
             LrcBoardViewModel = lrcBoardViewModel;
             OpenMediaCommand = new DelegateCommand(OpenMediaFile);
             PlayMediaCommand = new DelegateCommand<MediaPlayerCommand?>(RaiseMediaPlayerStatusChange, CanPlay);
+            PauseMediaCommand = new DelegateCommand<MediaPlayerCommand?>(RaiseMediaPlayerStatusChange, CanPause);
         }
 
         #region Private methods
+
+        private bool CanPause(MediaPlayerCommand? command)
+        {
+            return MediaSource != null && command.HasValue && IsMediaCommandLegal(command.Value);
+        }
 
         private bool CanPlay(MediaPlayerCommand? command)
         {
@@ -67,11 +85,16 @@ namespace MyLrcMaker.ViewModel
         private void ForceUpdateCanExecuteCommands()
         {
             PlayMediaCommand.ForceUpdateCanExecuteCommand();
+            PauseMediaCommand.ForceUpdateCanExecuteCommand();
         }
 
         private bool IsMediaCommandLegal(MediaPlayerCommand command)
         {
             if (_preCommand == MediaPlayerCommand.Play && command == MediaPlayerCommand.Play)
+            {
+                return false;
+            }
+            if ((_preCommand == MediaPlayerCommand.Pause || _preCommand == MediaPlayerCommand.Stop) && command == MediaPlayerCommand.Pause)
             {
                 return false;
             }
@@ -111,7 +134,7 @@ namespace MyLrcMaker.ViewModel
             Debug.Assert(command != null, "command can not be null");
             OnMediaPlayerStatusChange?.Invoke(this, new MediaPlayerStatusChangeArgs(command.Value));
             _preCommand = command.Value;
-            PlayMediaCommand.ForceUpdateCanExecuteCommand();
+            ForceUpdateCanExecuteCommands();
         }
 
         #endregion

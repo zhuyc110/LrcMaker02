@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Composition;
+using System.Windows;
 using MyLrcMaker.Infrastructure;
 using MyLrcMaker.ViewModel;
 
@@ -36,11 +37,11 @@ namespace MyLrcMaker.View
             switch (e.Command)
             {
                 case MediaPlayerCommand.Play:
-                    MediaElementPlayer.Play();
                     _songService.Initialize(MediaElementPlayer);
+                    MediaElementPlayer.Play();
                     break;
                 case MediaPlayerCommand.Pause:
-                    _songService.Release();
+                    _songService.Halt();
                     MediaElementPlayer.Pause();
                     break;
                 case MediaPlayerCommand.Stop:

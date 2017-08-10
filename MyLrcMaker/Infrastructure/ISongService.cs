@@ -11,6 +11,10 @@ namespace MyLrcMaker.Infrastructure
 
         void Initialize(MediaElement mediaElement);
 
+        void Halt();
+
+        void Resume();
+
         void Release();
     }
 }
