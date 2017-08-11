@@ -24,10 +24,11 @@ namespace MyLrcMaker.ViewModel
         public ILrcModel SelectedLrcModel { get; set; }
 
         [ImportingConstructor]
-        public LrcBoardViewModel(ILrcManager lrcManager, IIOService ioService)
+        public LrcBoardViewModel(ILrcManager lrcManager, IIOService ioService, ISongService songService)
         {
             _lrcManager = lrcManager;
             _ioService = ioService;
+            _songService = songService;
             OpenLrcCommand = new DelegateCommand(LoadLrc);
             SaveLrcCommand = new DelegateCommand(SaveLrc);
             EditLrcCommand = new DelegateCommand(EditLrc);
@@ -38,7 +39,7 @@ namespace MyLrcMaker.ViewModel
 
         private void EditLrc()
         {
-            _ioService.ShowDialog(new EditLrcViewModel(SelectedLrcModel), new DialogSetting {Height = 100, Width = 250});
+            _ioService.ShowDialog(new EditLrcViewModel(SelectedLrcModel, _songService), new DialogSetting {Height = 100, Width = 250});
         }
 
         private void LoadLrc()
@@ -72,6 +73,7 @@ namespace MyLrcMaker.ViewModel
 
         private readonly ILrcManager _lrcManager;
         private readonly IIOService _ioService;
+        private readonly ISongService _songService;
 
         #endregion
     }

@@ -1,12 +1,17 @@
 ﻿using System;
+using System.Windows.Input;
 using MyLrcMaker.Infrastructure;
 using MyLrcMaker.Model;
+using Prism.Commands;
 
 namespace MyLrcMaker.ViewModel
 {
     public class EditLrcViewModel : ResultViewModel<ILrcModel>
     {
+        private readonly ISongService _songService;
         public ILrcModel LrcModel { get; }
+
+        public ICommand GetCurrentTimeCommand { get; }
 
         public int Minutes
         {
@@ -26,12 +31,22 @@ namespace MyLrcMaker.ViewModel
             set => SetProperty(ref _milliseconds, value);
         }
 
-        public EditLrcViewModel(ILrcModel lrcModel)
+        public EditLrcViewModel(ILrcModel lrcModel, ISongService songService)
         {
+            _songService = songService;
             LrcModel = lrcModel;
             Minutes = LrcModel.Time.Minutes;
             Seconds = LrcModel.Time.Seconds;
             Milliseconds = LrcModel.Time.Milliseconds;
+            GetCurrentTimeCommand = new DelegateCommand(SetCurrentTimeToLrcTime);
+        }
+
+        private void SetCurrentTimeToLrcTime()
+        {
+            var time = TimeSpan.FromMilliseconds(_songService.Current);
+            Minutes = time.Minutes;
+            Seconds = time.Seconds;
+            Milliseconds = time.Milliseconds;
         }
 
         public override void Dispose()
