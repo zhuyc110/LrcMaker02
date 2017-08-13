@@ -21,11 +21,13 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Button Command="{Binding OpenLrcCommand}" Grid.Column="0" Grid.Row="0" Content="Open lrc" Margin="2" />
         <Button Command="{Binding SaveLrcCommand}" Grid.Column="0" Grid.Row="1" Content="Save lrc" Margin="2" />
-        <ListView ItemsSource="{Binding LrcSource}" SelectedItem="{Binding Path=SelectedLrcModel}" Grid.Column="1" Grid.Row="0" Grid.RowSpan="3">
+        <Button Command="{Binding LrcOffsetCommand}" Grid.Column="0" Grid.Row="2" Content="Set offset" Margin="2" />
+        <ListView ItemsSource="{Binding LrcSource}" SelectedItem="{Binding Path=SelectedLrcModel}" Grid.Column="1" Grid.Row="0" Grid.RowSpan="4">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />

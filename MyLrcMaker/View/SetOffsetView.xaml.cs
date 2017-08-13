@@ -3,15 +3,15 @@
 namespace MyLrcMaker.View
 {
     /// <summary>
-    /// EditLrcView.xaml 的交互逻辑
+    /// SetOffsetView.xaml 的交互逻辑
     /// </summary>
-    [Export(typeof(EditLrcView))]
+    [Export(typeof(SetOffsetView))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
-    public partial class EditLrcView
+    public partial class SetOffsetView
     {
-        public override string Title => "编辑时间";
+        public override string Title => "偏移";
 
-        public EditLrcView()
+        public SetOffsetView()
         {
             InitializeComponent();
         }

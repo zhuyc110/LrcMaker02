@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -19,6 +20,8 @@ namespace MyLrcMaker.ViewModel
 
         public ICommand EditLrcCommand { get; }
 
+        public ICommand LrcOffsetCommand { get; }
+
         public ObservableCollection<ILrcModel> LrcSource { get; set; }
 
         public ILrcModel SelectedLrcModel { get; set; }
@@ -32,7 +35,21 @@ namespace MyLrcMaker.ViewModel
             OpenLrcCommand = new DelegateCommand(LoadLrc);
             SaveLrcCommand = new DelegateCommand(SaveLrc);
             EditLrcCommand = new DelegateCommand(EditLrc);
+            LrcOffsetCommand = new DelegateCommand(OpenOffset);
             LrcSource = new ObservableCollection<ILrcModel>(lrcManager.LrcModels);
+        }
+
+        private void OpenOffset()
+        {
+            var viewModel = new SetOffsetViewModel();
+            _ioService.ShowDialog(viewModel, new DialogSetting {Height = 65, Width = 100});
+            if (viewModel.Offset != 0)
+            {
+                foreach (var lrcModel in LrcSource)
+                {
+                    lrcModel.Time += TimeSpan.FromSeconds(viewModel.Offset);
+                }
+            }
         }
 
         #region Private methods

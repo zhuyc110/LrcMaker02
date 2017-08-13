@@ -95,6 +95,7 @@
     <Compile Include="Converters\TimeSpanToLrcFormatConverter.cs" />
     <Compile Include="Extension\ICommandExtension.cs" />
     <Compile Include="Infrastructure\DialogSetting.cs" />
+    <Compile Include="Infrastructure\DialogViewBase.cs" />
     <Compile Include="Infrastructure\IIOService.cs" />
     <Compile Include="Infrastructure\IOService.cs" />
     <Compile Include="Infrastructure\IView.cs" />
@@ -110,6 +111,7 @@
     <Compile Include="ViewModel\LrcBoardViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\MediaPlayerStatusChangeArgs.cs" />
+    <Compile Include="ViewModel\SetOffsetViewModel.cs" />
     <Compile Include="View\EditLrcView.xaml.cs">
       <DependentUpon>EditLrcView.xaml</DependentUpon>
     </Compile>
@@ -118,6 +120,9 @@
     </Compile>
     <Compile Include="View\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\SetOffsetView.xaml.cs">
+      <DependentUpon>SetOffsetView.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -142,6 +147,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\MainView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\SetOffsetView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
