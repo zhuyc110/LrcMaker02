@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.Windows.Controls;
 
 namespace MyLrcMaker.Infrastructure
 {
@@ -9,9 +8,11 @@ namespace MyLrcMaker.Infrastructure
 
         double Current { get; }
 
-        void Initialize(MediaElement mediaElement);
+        void Initialize(IMediaElementHost mediaElement);
 
-        void Halt();
+        void Play();
+
+        void Pause();
 
         void Resume();
 

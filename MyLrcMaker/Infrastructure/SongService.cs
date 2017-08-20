@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Composition;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Threading;
 using Prism.Mvvm;
 
@@ -25,8 +24,10 @@ namespace MyLrcMaker.Infrastructure
 
         #region ISongService Members
 
-        public void Halt()
+        public void Pause()
         {
+            _mediaElement.Pause();
+
             if (_timer != null && _timer.IsEnabled)
             {
                 _timer.Stop();
@@ -34,23 +35,24 @@ namespace MyLrcMaker.Infrastructure
             }
         }
 
-        public void Initialize(MediaElement mediaElement)
+        public void Initialize(IMediaElementHost mediaElement)
         {
-            Resume();
-
-            if (Equals(_mediaElement, mediaElement))
+            if (_isInitialized == false)
             {
-                return;
+                _isInitialized = true;
+                _mediaElement = mediaElement;
+                _mediaElement.MediaOpened += OnMediaOpened;
+                _mediaElement.MediaEnded += OnMediaEnded;
             }
-            _mediaElement = mediaElement;
-            _mediaElement.MediaOpened += OnMediaOpened;
-            _mediaElement.MediaEnded += OnMediaEnded;
         }
 
-        private void OnMediaEnded(object sender, RoutedEventArgs e)
+        public void Play()
         {
-            Halt();
-            Current = _mediaElement.NaturalDuration.TimeSpan.TotalMilliseconds;
+            if (_timer != null && !_timer.IsEnabled)
+            {
+                _timer.Start();
+            }
+            _mediaElement.Play();
         }
 
         public void Release()
@@ -74,6 +76,12 @@ namespace MyLrcMaker.Infrastructure
 
         #region Private methods
 
+        private void OnMediaEnded(object sender, RoutedEventArgs e)
+        {
+            Release();
+            Current = _mediaElement.NaturalDuration.TimeSpan.TotalMilliseconds;
+        }
+
         private void OnMediaOpened(object sender, RoutedEventArgs e)
         {
             Release();
@@ -93,10 +101,12 @@ namespace MyLrcMaker.Infrastructure
 
         #region Fields
 
-        private MediaElement _mediaElement;
+        private IMediaElementHost _mediaElement;
         private DispatcherTimer _timer;
         private double _totalLength;
         private double _current;
+
+        private bool _isInitialized = false;
 
         #endregion
     }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Windows.Forms;
@@ -15,8 +14,6 @@ namespace MyLrcMaker.ViewModel
     [PartCreationPolicy(CreationPolicy.Shared)]
     public class MainViewModel : BindableBase
     {
-        public event EventHandler<MediaPlayerStatusChangeArgs> OnMediaPlayerStatusChange;
-
         public LrcBoardViewModel LrcBoardViewModel { get; }
 
         public ICommand OpenMediaCommand { get; }
@@ -37,37 +34,16 @@ namespace MyLrcMaker.ViewModel
             }
         }
 
-        public double TotalLength
-        {
-            get => _totalLength;
-            set => SetProperty(ref _totalLength, value);
-        }
-
-        public double Current
-        {
-            get => _current;
-            set
-            {
-                if (SetProperty(ref _current, value))
-                {
-                    if (_songService.Current != Current)
-                    {
-                        _songService.Resume();
-                    }
-                }
-                
-            }
-        }
+        public ISongService SongService => _songService;
 
         [ImportingConstructor]
         public MainViewModel(LrcBoardViewModel lrcBoardViewModel, ISongService songService)
         {
             _songService = songService;
-            _songService.PropertyChanged += OnSongServicePropertyChanged;
             LrcBoardViewModel = lrcBoardViewModel;
             OpenMediaCommand = new DelegateCommand(OpenMediaFile);
-            PlayMediaCommand = new DelegateCommand<MediaPlayerCommand?>(RaiseMediaPlayerStatusChange, CanPlay);
-            PauseMediaCommand = new DelegateCommand<MediaPlayerCommand?>(RaiseMediaPlayerStatusChange, CanPause);
+            PlayMediaCommand = new DelegateCommand<MediaPlayerCommand?>(Play, CanPlay);
+            PauseMediaCommand = new DelegateCommand<MediaPlayerCommand?>(Pause, CanPause);
         }
 
         #region Private methods
@@ -102,25 +78,13 @@ namespace MyLrcMaker.ViewModel
             return true;
         }
 
-        private void OnSongServicePropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(ISongService.TotalLength))
-            {
-                TotalLength = _songService.TotalLength;
-            }
-
-            if (e.PropertyName == nameof(ISongService.Current))
-            {
-                Current = _songService.Current;
-            }
-        }
-
         private void OpenMediaFile()
         {
             using (var dialog = new OpenFileDialog())
             {
                 dialog.Title = "打开音频文件";
                 dialog.Multiselect = false;
+                dialog.Filter = "音频文件|*.mp3;*.wav";
 
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
@@ -129,10 +93,21 @@ namespace MyLrcMaker.ViewModel
             }
         }
 
+        private void Pause(MediaPlayerCommand? command)
+        {
+            _songService.Pause();
+            RaiseMediaPlayerStatusChange(command);
+        }
+
+        private void Play(MediaPlayerCommand? command)
+        {
+            _songService.Play();
+            RaiseMediaPlayerStatusChange(command);
+        }
+
         private void RaiseMediaPlayerStatusChange(MediaPlayerCommand? command)
         {
             Debug.Assert(command != null, "command can not be null");
-            OnMediaPlayerStatusChange?.Invoke(this, new MediaPlayerStatusChangeArgs(command.Value));
             _preCommand = command.Value;
             ForceUpdateCanExecuteCommands();
         }
@@ -145,8 +120,6 @@ namespace MyLrcMaker.ViewModel
 
         private Uri _mediaSource;
         private MediaPlayerCommand _preCommand = MediaPlayerCommand.Stop;
-        private double _totalLength;
-        private double _current;
 
         #endregion
     }

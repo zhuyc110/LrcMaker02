@@ -90,6 +90,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Controls\MediaElementHelper.cs" />
+    <Compile Include="Controls\MyMediaElement.cs" />
     <Compile Include="Converters\DoubleToLrcFormatConverter.cs" />
     <Compile Include="Converters\DoubleToTimeSpanConverter.cs" />
     <Compile Include="Converters\TimeSpanToLrcFormatConverter.cs" />
@@ -97,6 +98,7 @@
     <Compile Include="Infrastructure\DialogSetting.cs" />
     <Compile Include="Infrastructure\DialogViewBase.cs" />
     <Compile Include="Infrastructure\IIOService.cs" />
+    <Compile Include="Infrastructure\IMediaElementHost.cs" />
     <Compile Include="Infrastructure\IOService.cs" />
     <Compile Include="Infrastructure\IView.cs" />
     <Compile Include="Infrastructure\ResultViewModel.cs" />

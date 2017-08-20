@@ -33,19 +33,19 @@
                     Command="{Binding Path=PauseMediaCommand}" CommandParameter="{x:Static viewModel:MediaPlayerCommand.Pause}" />
 
         </StackPanel>
-        <MediaElement x:Name="MediaElementPlayer" Grid.Column="1" HorizontalAlignment="Center" Grid.Row="0" VerticalAlignment="Bottom" Width="100" Height="20"
+        <controls:MyMediaElement x:Name="MediaElementPlayer" Grid.Column="1" HorizontalAlignment="Center" Grid.Row="0" VerticalAlignment="Bottom" Width="100" Height="20"
                       Source="{Binding Path=MediaSource}" LoadedBehavior="Manual"
                       controls:MediaElementHelper.BindablePosition="{Binding ElementName=PositionSlider, Path=Value, Converter={StaticResource DoubleToTimeSpanConverter}}"/>
         <Slider Grid.Row="0" Grid.Column="1"
                 x:Name="PositionSlider"
                 Minimum="0"
-                Maximum="{Binding Path=TotalLength}"
-                Value="{Binding Path=Current}"/>
+                Maximum="{Binding Path=SongService.TotalLength}"
+                Value="{Binding Path=SongService.Current}"/>
         <TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock.Text>
                 <MultiBinding StringFormat="{}{0}/{1}">
-                    <Binding Path="Current" Converter="{StaticResource DoubleToLrcFormatConverter}"/>
-                    <Binding Path="TotalLength" Converter="{StaticResource DoubleToLrcFormatConverter}"/>
+                    <Binding Path="SongService.Current" Converter="{StaticResource DoubleToLrcFormatConverter}"/>
+                    <Binding Path="SongService.TotalLength" Converter="{StaticResource DoubleToLrcFormatConverter}"/>
                 </MultiBinding>
             </TextBlock.Text>
         </TextBlock>
